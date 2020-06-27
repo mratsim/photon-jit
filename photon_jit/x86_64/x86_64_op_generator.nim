@@ -84,8 +84,8 @@ proc label(id: NimNode): NimNode =
 
 proc types(ids: NimNode): NimNode =
   ## Type section - "T: (uint16 or int16) or (uint32 or int32) or (uint§4 or int64)"
-  assert ids[0].eqIdent "type"
-  assert ids.len == 2
+  doAssert ids[0].eqIdent "type"
+  doAssert ids.len == 2
 
   # 1. build (uint64 or int64)
   result = (ident "uint" & $ids[1].intVal) or (ident "int" & $ids[1].intVal)
@@ -107,7 +107,7 @@ proc searchRegRM(bracket: NimNode): tuple[reg, rm: NimNode] =
   # modrm if it exists is always the last one
   if bracket[^1].kind == nnkCall:
     let modrm = bracket[^1]
-    assert modrm[0].eqIdent"modrm"
+    doAssert modrm[0].eqIdent"modrm"
     let reg_or_ext = modrm[2]
     let rm = modrm[3]
 
@@ -171,7 +171,7 @@ proc rexifyBody(bodySpecs, dst_or_adr0: NimNode): NimNode =
         if node.kind == nnkCall:
           # original is [rex(w=1), opcode, ...]
           # new is [rex(w=1, b=.., r=..), opcode, ...]
-          assert node[0].eqIdent"rex", $node.treerepr  # TODO support VEX for SSE/AVX
+          doAssert node[0].eqIdent"rex", $node.treerepr  # TODO support VEX for SSE/AVX
           var newRex = node.copy()
           # Monkey-patch rex(w=1)
           newRex.add rExpr
@@ -196,7 +196,7 @@ proc rexifyBody(bodySpecs, dst_or_adr0: NimNode): NimNode =
       if i == 0:
         let bExpr = regUpperExpr("b", rm)  # REX.B extends modrm.rm
         if node.kind == nnkCall:
-          assert node[0].eqIdent"rex", $node.treerepr # TODO support VEX for SSE/AVX
+          doAssert node[0].eqIdent"rex", $node.treerepr # TODO support VEX for SSE/AVX
           var newRex = node.copy()
           # Monkey-patch rex(w=1)
           newRex.add bExpr
@@ -257,7 +257,7 @@ proc newInlineProc*(
     procType = nnkProcDef): NimNode =
   ## We define our own newProc shortcut with
   ## pragmas and export marker
-  assert procType in RoutineNodes
+  doAssert procType in RoutineNodes
   result = newNimNode(procType).add(
     nnkPostFix.newTree(ident"*", name),
     newEmptyNode(),                          ## pattern matching for term-rewriting macros
@@ -279,10 +279,10 @@ macro op_generator*(instructions: untyped): untyped =
   for op in instructions:
     # Sanity checks
     op.expectKind nnkCommand
-    assert op[0].eqIdent "op"
+    doAssert op[0].eqIdent "op"
     op[1].expectKind nnkIdent # for example ident "MOV"
     op[2].expectKind nnkStmtList
-    assert op.len == 3
+    doAssert op.len == 3
 
     let procName = newIdentNode toLower($op[1])
     var procComment: NimNode
@@ -367,8 +367,8 @@ macro op_generator*(instructions: untyped): untyped =
         if bodySpecs.kind == nnkBracket:
           procBody.processSpecs(assemblerSym, dst, src, adr, bodySpecs)
         elif bodySpecs.kind == nnkInfix:
-          assert not useLabels
-          assert bodySpecs[0].eqIdent"&"
+          doAssert not useLabels
+          doAssert bodySpecs[0].eqIdent"&"
           procBody.processSpecs(assemblerSym, dst, src, adr, bodySpecs[1])
           procBody.add quote do:
             `assemblerSym`.code.add cast[array[sizeof(`imm`), byte]](`imm`)
@@ -385,7 +385,7 @@ macro op_generator*(instructions: untyped): untyped =
 
         if genPointerVersion:
           # We replace the imm64: uint64 or int64 by imm64: pointer
-          assert procParams[^1][0].eqIdent"imm64"
+          doAssert procParams[^1][0].eqIdent"imm64"
           # Deal with shallow copy semantics of NimNodes
           var procParamsPointer = procParams
           var pnode = procParamsPointer[^1].copy()
