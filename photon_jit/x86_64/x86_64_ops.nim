@@ -81,7 +81,7 @@ op_generator:
     [adr, type(64)]: [rex(w=1), 0xFF, modrm(Indirect, opcode_ext = 0, rm = adr[0])]
     [adr, type(32)]: [          0xFF, modrm(Indirect, opcode_ext = 0, rm = adr[0])]
     [adr, type(16)]: [    0x66, 0xFF, modrm(Indirect, opcode_ext = 0, rm = adr[0])]
-    [adr, type(8)]:  [0xFE, modrm(Indirect, opcode_ext = 0, rm = adr[0])]
+    [adr, type(8)]:  [          0xFE, modrm(Indirect, opcode_ext = 0, rm = adr[0])]
 
   op DEC:
     ## Increment register by 1. Carry flag is never updated.
@@ -93,5 +93,4 @@ op_generator:
     [adr, type(64)]: [rex(w=1), 0xFF, modrm(Indirect, opcode_ext = 1, rm = adr[0])]
     [adr, type(32)]: [          0xFF, modrm(Indirect, opcode_ext = 1, rm = adr[0])]
     [adr, type(16)]: [    0x66, 0xFF, modrm(Indirect, opcode_ext = 1, rm = adr[0])]
-    [adr, type(8)]:  [0xFE, modrm(Indirect, opcode_ext = 1, rm = adr[0])]
-
+    [adr, type(8)]:  [          0xFE, modrm(Indirect, opcode_ext = 1, rm = adr[0])]

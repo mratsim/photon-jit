@@ -83,7 +83,7 @@ proc label(id: NimNode): NimNode =
   newIdentDefs(id, ident"Label")
 
 proc types(ids: NimNode): NimNode =
-  ## Type section - "T: (uint16 or int16) or (uint32 or int32) or (uint§4 or int64)"
+  ## Type section - "T: (uint16 or int16) or (uint32 or int32) or (uint64 or int64)"
   doAssert ids[0].eqIdent "type"
   doAssert ids.len == 2
 
