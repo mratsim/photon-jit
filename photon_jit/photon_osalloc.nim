@@ -8,8 +8,9 @@ const PageSize* = 4096
 
 when defined(windows):
   type MemProt* {.size: cint.sizeof.} = enum
-    ProtReadWrite = 0x04 # Page can be read or written to
     ProtReadExec  = 0x02 # Page can be read or executed from
+    ProtReadWrite = 0x04 # Page can be read or written to
+    
 else:
   type MemProt* {.size: cint.sizeof.} = enum
     # is *not* a flag on Win32!
